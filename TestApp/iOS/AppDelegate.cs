@@ -2,30 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using Foundation;
+using UIKit;
 
-using Xamarin.Forms;
 using EstimoteBinding;
-using MonoTouch.CoreLocation;
 
 namespace TestApp.iOS
 {
 	[Register ("AppDelegate")]
-	public partial class AppDelegate : UIApplicationDelegate
+	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
 	{
-		UIWindow window;
 		ESTBeaconManager _beaconManager;
+		int _beaconCount = -1;
 		string _uuid = "b9407f30-f5f8-466e-aff9-25556b57fe6d";
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
-			Forms.Init ();
+			global::Xamarin.Forms.Forms.Init ();
 
-			window = new UIWindow (UIScreen.MainScreen.Bounds);
-			
-			window.RootViewController = App.GetMainPage ().CreateViewController ();
-			window.MakeKeyAndVisible ();
+			LoadApplication (new App ());
 
 			InvokeInBackground(() => 
 				{
@@ -41,13 +36,11 @@ namespace TestApp.iOS
 
 					_beaconManager.DidDiscoverBeacons += (sender, e) => 
 					{
-						if (e.Beacons == null || e.Beacons.Length == 0)
-						{
-							Console.WriteLine("Discovered no beacons");
-						}
-						else
+						var beaconCount = e.Beacons == null ? 0 : e.Beacons.Length;
+						if (beaconCount != _beaconCount)
 						{
 							Console.WriteLine("Discovered {0} beacons", e.Beacons.Length);
+							_beaconCount = beaconCount;
 						}
 					};
 
@@ -55,7 +48,7 @@ namespace TestApp.iOS
 
 				});
 
-			return true;
+			return base.FinishedLaunching (app, options);
 		}
 	}
 }

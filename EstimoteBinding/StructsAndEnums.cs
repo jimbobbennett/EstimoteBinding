@@ -1,7 +1,5 @@
 ﻿using System;
-
-using MonoTouch.ObjCRuntime;
-using MonoTouch.Foundation;
+using ObjCRuntime;
 
 namespace EstimoteBinding
 {
@@ -68,7 +66,7 @@ namespace EstimoteBinding
 	}
 
 	[Native]
-	public enum ESBeaconUpdateInfoStatus : int /* nint */ {
+	public enum ESBeaconUpdateInfoStatus : long /* nint */ {
 		Idle,
 		ReadyToUpdate,
 		Updating,
@@ -77,20 +75,20 @@ namespace EstimoteBinding
 	}
 
 	[Native]
-	public enum ESBulkUpdaterStatus : int /* nint */ {
+	public enum ESBulkUpdaterStatus : long /* nint */ {
 		Idle,
 		Updating,
 		Completed
 	}
 
 	[Native]
-	public enum ESTBulkUpdaterMode : int /* nint */ {
+	public enum ESTBulkUpdaterMode : long /* nint */ {
 		Foreground,
 		Background
 	}
 
 	[Native]
-	public enum ESTNearableType : int /* nint */ {
+	public enum ESTNearableType : long /* nint */ {
 		Unknown = 0,
 		Dog,
 		Car,
@@ -106,7 +104,7 @@ namespace EstimoteBinding
 	}
 
 	[Native]
-	public enum ESTNearableOrientation : int /* nint */ {
+	public enum ESTNearableOrientation : long /* nint */ {
 		Unknown = 0,
 		Horizontal,
 		HorizontalUpsideDown,
@@ -117,7 +115,7 @@ namespace EstimoteBinding
 	}
 
 	[Native]
-	public enum ESTNearableZone : int /* nint */ {
+	public enum ESTNearableZone : long /* nint */ {
 		Unknown = 0,
 		Immediate,
 		Near,
@@ -125,7 +123,7 @@ namespace EstimoteBinding
 	}
 
 	[Native]
-	public enum ESTNearableFirmwareState : int /* nint */ {
+	public enum ESTNearableFirmwareState : long /* nint */ {
 		Boot = 0,
 		App
 	}
