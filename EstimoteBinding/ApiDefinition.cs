@@ -107,19 +107,19 @@ namespace EstimoteBinding
 	interface ESTBeaconDelegate {
 
 		// @optional -(void)beaconConnectionDidSucceeded:(ESTBeacon *)beacon;
-		[Export ("beaconConnectionDidSucceeded:"), EventArgs("Beacon")]
+		[Export ("beaconConnectionDidSucceeded:"), EventArgs("BeaconConnectionDidSucceeded")]
 		void BeaconConnectionDidSucceeded (ESTBeacon beacon);
 
 		// @optional -(void)beaconConnectionDidFail:(ESTBeacon *)beacon withError:(NSError *)error;
-		[Export ("beaconConnectionDidFail:withError:"), EventArgs("BeaconWithError")]
-		void WithError (ESTBeacon beacon, NSError error);
+		[Export ("beaconConnectionDidFail:withError:"), EventArgs("v")]
+		void BeaconConnectionDidFail (ESTBeacon beacon, NSError error);
 
 		// @optional -(void)beacon:(ESTBeacon *)beacon didDisconnectWithError:(NSError *)error;
-		[Export ("beacon:didDisconnectWithError:"), EventArgs("BeaconWithError")]
+		[Export ("beacon:didDisconnectWithError:"), EventArgs("DidDisconnectWithError")]
 		void DidDisconnectWithError (ESTBeacon beacon, NSError error);
 
 		// @optional -(void)beacon:(ESTBeacon *)beacon accelerometerStateChanged:(BOOL)state;
-		[Export ("beacon:accelerometerStateChanged:"), EventArgs("BeaconAccelerometerStateChanged")]
+		[Export ("beacon:accelerometerStateChanged:"), EventArgs("AccelerometerStateChanged")]
 		void AccelerometerStateChanged (ESTBeacon beacon, bool state);
 	}
 
@@ -246,6 +246,10 @@ namespace EstimoteBinding
 		[Export ("accelerometerEnabled")]
 		bool AccelerometerEnabled { get; }
 
+		// @property (readonly, nonatomic) BOOL motionUUIDEnabled;
+		[Export ("motionUUIDEnabled")]
+		bool MotionUUIDEnabled { get; }
+
 		// @property (readonly, nonatomic) ESTBeaconPowerSavingMode basicPowerMode;
 		[Export ("basicPowerMode")]
 		ESTBeaconPowerSavingMode BasicPowerMode { get; }
@@ -294,10 +298,6 @@ namespace EstimoteBinding
 		[Export ("writeProximityUUID:completion:")]
 		void WriteProximityUUID (string pUUID, Action<NSString, NSError> completion);
 
-		// -(void)writeMotionProximityUUID:(NSString *)pUUID completion:(ESTStringCompletionBlock)completion;
-		[Export ("writeMotionProximityUUID:completion:")]
-		void WriteMotionProximityUUID (string pUUID, Action<NSString, NSError> completion);
-
 		// -(void)writeMajor:(unsigned short)major completion:(ESTUnsignedShortCompletionBlock)completion;
 		[Export ("writeMajor:completion:")]
 		void WriteMajor (ushort major, Action<ushort, NSError> completion);
@@ -321,6 +321,10 @@ namespace EstimoteBinding
 		// -(void)enableAccelerometer:(BOOL)enable completion:(ESTBoolCompletionBlock)completion;
 		[Export ("enableAccelerometer:completion:")]
 		void EnableAccelerometer (bool enable, Action<sbyte, NSError> completion);
+
+		// -(void)enableMotionUUID:(BOOL)enable completion:(ESTBoolCompletionBlock)completion;
+		[Export ("enableMotionUUID:completion:")]
+		void EnableMotionUUID (bool enable, Action<sbyte, NSError> completion);
 
 		// -(void)enableBasicPowerMode:(BOOL)enable completion:(ESTBoolCompletionBlock)completion;
 		[Export ("enableBasicPowerMode:completion:")]
@@ -380,9 +384,13 @@ namespace EstimoteBinding
 		[Export ("initWithProximityUUID:major:minor:identifier:secured:")]
 		IntPtr Constructor (NSUuid proximityUUID, ushort major, ushort minor, string identifier, bool secured);
 
-		// @property (readonly, assign, nonatomic, getter = isSecured) BOOL secured;
-		[Export ("secured", ArgumentSemantic.UnsafeUnretained)]
-		bool Secured { [Bind ("isSecured")] get; }
+		// @property (assign, nonatomic) BOOL isSecured;
+		[Export ("isSecured", ArgumentSemantic.UnsafeUnretained)]
+		bool IsSecured { get; set; }
+
+		// @property (assign, nonatomic) BOOL inMotion;
+		[Export ("inMotion", ArgumentSemantic.UnsafeUnretained)]
+		bool InMotion { get; set; }
 	}
 
 	// @protocol ESTBeaconManagerDelegate <NSObject>
@@ -391,7 +399,7 @@ namespace EstimoteBinding
 	interface ESTBeaconManagerDelegate {
 
 		// @optional -(void)beaconManager:(ESTBeaconManager *)manager didStartMonitoringForRegion:(ESTBeaconRegion *)region;
-		[Export ("beaconManager:didStartMonitoringForRegion:"), EventArgs("BeaconManagerWithRegion")]
+		[Export ("beaconManager:didStartMonitoringForRegion:"), EventArgs("DidStartMonitoringForRegion")]
 		void DidStartMonitoringForRegion (ESTBeaconManager manager, ESTBeaconRegion region);
 
 		// @optional -(void)beaconManager:(ESTBeaconManager *)manager monitoringDidFailForRegion:(ESTBeaconRegion *)region withError:(NSError *)error;
@@ -399,11 +407,11 @@ namespace EstimoteBinding
 		void MonitoringDidFailForRegion (ESTBeaconManager manager, ESTBeaconRegion region, NSError error);
 
 		// @optional -(void)beaconManager:(ESTBeaconManager *)manager didEnterRegion:(ESTBeaconRegion *)region;
-		[Export ("beaconManager:didEnterRegion:"), EventArgs("BeaconManagerWithRegion")]
+		[Export ("beaconManager:didEnterRegion:"), EventArgs("DidEnterRegion")]
 		void DidEnterRegion (ESTBeaconManager manager, ESTBeaconRegion region);
 
 		// @optional -(void)beaconManager:(ESTBeaconManager *)manager didExitRegion:(ESTBeaconRegion *)region;
-		[Export ("beaconManager:didExitRegion:"), EventArgs("BeaconManagerWithRegion")]
+		[Export ("beaconManager:didExitRegion:"), EventArgs("DidExitRegion")]
 		void DidExitRegion (ESTBeaconManager manager, ESTBeaconRegion region);
 
 		// @optional -(void)beaconManager:(ESTBeaconManager *)manager didDetermineState:(CLRegionState)state forRegion:(ESTBeaconRegion *)region;
@@ -423,11 +431,11 @@ namespace EstimoteBinding
 		void DidDiscoverBeacons (ESTBeaconManager manager, NSObject [] beacons, ESTBeaconRegion region);
 
 		// @optional -(void)beaconManager:(ESTBeaconManager *)manager didFailDiscoveryInRegion:(ESTBeaconRegion *)region;
-		[Export ("beaconManager:didFailDiscoveryInRegion:"), EventArgs("BeaconManagerWithRegion")]
+		[Export ("beaconManager:didFailDiscoveryInRegion:"), EventArgs("DidFailDiscoveryInRegion")]
 		void DidFailDiscoveryInRegion (ESTBeaconManager manager, ESTBeaconRegion region);
 
 		// @optional -(void)beaconManagerDidStartAdvertising:(ESTBeaconManager *)manager error:(NSError *)error;
-		[Export ("beaconManagerDidStartAdvertising:error:"), EventArgs("BeaconManagerWithError")]
+		[Export ("beaconManagerDidStartAdvertising:error:"), EventArgs("DidStartAdvertising")]
 		void DidStartAdvertising (ESTBeaconManager manager, NSError error);
 
 		// @optional -(void)beaconManager:(ESTBeaconManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status;
@@ -570,7 +578,7 @@ namespace EstimoteBinding
 	interface ESBeaconUpdateInfoDelegate {
 
 		// @required -(void)beaconUpdateInfoInitialized:(id)beaconUpdateInfo;
-		[Export ("beaconUpdateInfoInitialized:"), EventArgs("BeaconUpdateInfo")]
+		[Export ("beaconUpdateInfoInitialized:"), EventArgs("BeaconUpdateInfoInitialized")]
 		[Abstract]
 		void BeaconUpdateInfoInitialized (NSObject beaconUpdateInfo);
 	}
@@ -628,7 +636,7 @@ namespace EstimoteBinding
 
 		// -(NSString *)description;
 		[Export ("description")]
-		string Description ();
+		string UpdateDescription ();
 	}
 
 	// @interface ESTBulkUpdater : NSObject
@@ -723,7 +731,7 @@ namespace EstimoteBinding
 
 		// @property (readonly, assign, nonatomic) ESTNearableZone zone;
 		[Export ("zone", ArgumentSemantic.UnsafeUnretained)]
-		ESTNearableZone Zone { get; }
+		ESTNearableZone NearableZone { get; }
 
 		// @property (readonly, assign, nonatomic) double idleBatteryVoltage;
 		[Export ("idleBatteryVoltage", ArgumentSemantic.UnsafeUnretained)]
@@ -788,7 +796,7 @@ namespace EstimoteBinding
 	interface ESTTriggerDelegate {
 
 		// @optional -(void)triggerDidChangeState:(ESTTrigger *)trigger;
-		[Export ("triggerDidChangeState:"), EventArgs("Trigger")]
+		[Export ("triggerDidChangeState:"), EventArgs("TriggerDidChangeState")]
 		void TriggerDidChangeState (ESTTrigger trigger);
 	}
 
@@ -914,31 +922,31 @@ namespace EstimoteBinding
 		void DidRangeNearables (ESTNearableManager manager, NSObject [] nearables, ESTNearableType type);
 
 		// @optional -(void)nearableManager:(ESTNearableManager *)manager didRangeNearable:(ESTNearable *)nearable;
-		[Export ("nearableManager:didRangeNearable:"), EventArgs("NearableManagerWithNearable")]
+		[Export ("nearableManager:didRangeNearable:"), EventArgs("DidRangeNearable")]
 		void DidRangeNearable (ESTNearableManager manager, ESTNearable nearable);
 
 		// @optional -(void)nearableManager:(ESTNearableManager *)manager rangingFailedWithError:(NSError *)error;
-		[Export ("nearableManager:rangingFailedWithError:"), EventArgs("NearableManagerWithError")]
+		[Export ("nearableManager:rangingFailedWithError:"), EventArgs("RangingFailedWithError")]
 		void RangingFailedWithError (ESTNearableManager manager, NSError error);
 
 		// @optional -(void)nearableManager:(ESTNearableManager *)manager didEnterTypeRegion:(ESTNearableType)type;
-		[Export ("nearableManager:didEnterTypeRegion:"), EventArgs("NearableManagerWithNearableType")]
+		[Export ("nearableManager:didEnterTypeRegion:"), EventArgs("DidEnterTypeRegion")]
 		void DidEnterTypeRegion (ESTNearableManager manager, ESTNearableType type);
 
 		// @optional -(void)nearableManager:(ESTNearableManager *)manager didExitTypeRegion:(ESTNearableType)type;
-		[Export ("nearableManager:didExitTypeRegion:"), EventArgs("NearableManagerWithNearableType")]
+		[Export ("nearableManager:didExitTypeRegion:"), EventArgs("DidExitTypeRegion")]
 		void DidExitTypeRegion (ESTNearableManager manager, ESTNearableType type);
 
 		// @optional -(void)nearableManager:(ESTNearableManager *)manager didEnterIdentifierRegion:(NSString *)identifier;
-		[Export ("nearableManager:didEnterIdentifierRegion:"), EventArgs("NearableManagerWithIdentifier")]
+		[Export ("nearableManager:didEnterIdentifierRegion:"), EventArgs("DidEnterIdentifierRegion")]
 		void DidEnterIdentifierRegion (ESTNearableManager manager, string identifier);
 
 		// @optional -(void)nearableManager:(ESTNearableManager *)manager didExitIdentifierRegion:(NSString *)identifier;
-		[Export ("nearableManager:didExitIdentifierRegion:"), EventArgs("NearableManagerWithIdentifier")]
+		[Export ("nearableManager:didExitIdentifierRegion:"), EventArgs("DidExitIdentifierRegion")]
 		void DidExitIdentifierRegion (ESTNearableManager manager, string identifier);
 
 		// @optional -(void)nearableManager:(ESTNearableManager *)manager monitoringFailedWithError:(NSError *)error;
-		[Export ("nearableManager:monitoringFailedWithError:"), EventArgs("NearableManagerWithError")]
+		[Export ("nearableManager:monitoringFailedWithError:"), EventArgs("MonitoringFailedWithError")]
 		void MonitoringFailedWithError (ESTNearableManager manager, NSError error);
 	}
 
@@ -1083,7 +1091,7 @@ namespace EstimoteBinding
 	interface ESTTriggerManagerDelegate {
 
 		// @optional -(void)triggerManager:(ESTTriggerManager *)manager triggerChangedState:(ESTTrigger *)trigger;
-		[Export ("triggerManager:triggerChangedState:"), EventArgs("TriggerChanged")]
+		[Export ("triggerManager:triggerChangedState:"), EventArgs("TriggerChangedState")]
 		void TriggerChangedState (ESTTriggerManager manager, ESTTrigger trigger);
 	}
 
