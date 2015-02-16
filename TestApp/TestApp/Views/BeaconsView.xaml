@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:ValueConverters="clr-namespace:TestApp.Converters;assembly=TestApp" 
+			 x:Class="TestApp.BeaconsView">
+	<ContentPage.Content>
+		<Grid RowSpacing="10">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<Label Grid.Row="0" Text="Discovered iBeacons" HorizontalOptions="Center"/>
+
+			<ListView Grid.Row="1" ItemsSource="{Binding Path=Beacons}">
+				<ListView.ItemTemplate>
+				    <DataTemplate>
+				      	<ImageCell ImageSource="Images/beacon_linear.png" 
+				      			   Text="{Binding Path=Title}"
+				      			   Detail="{Binding Path=Details}"/>
+				    </DataTemplate>
+				  </ListView.ItemTemplate>
+			</ListView>
+		</Grid>
+	</ContentPage.Content>
+</ContentPage>

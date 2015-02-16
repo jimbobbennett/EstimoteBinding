@@ -1,30 +1,26 @@
 ﻿using System;
 
+using TestApp.Interfaces;
 using Xamarin.Forms;
+using System.Collections.Generic;
 
 namespace TestApp
 {
 	public class App : Application
 	{
+		private List<Guid> _uuids = new List<Guid>
+		{
+			Guid.Parse("b9407f30-f5f8-466e-aff9-25556b57fe6d")
+		};
+
 		public App ()
 		{
-			// The root page of your application
-			MainPage = new ContentPage {
-				Content = new StackLayout {
-					VerticalOptions = LayoutOptions.Center,
-					Children = {
-						new Label {
-							XAlign = TextAlignment.Center,
-							Text = "Welcome to Xamarin Forms!"
-						}
-					}
-				}
-			};
+			MainPage = new BeaconsView();
 		}
 
 		protected override void OnStart ()
 		{
-			// Handle when your app starts
+			DependencyService.Get<IBeaconDiscovery>().StartLookingForBeacons(_uuids);
 		}
 
 		protected override void OnSleep ()
