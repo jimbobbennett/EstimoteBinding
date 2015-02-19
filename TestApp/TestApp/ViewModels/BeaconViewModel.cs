@@ -1,6 +1,7 @@
 ﻿using System;
 using TestApp.Interfaces;
 using System.ComponentModel;
+using Xamarin.Forms;
 
 namespace TestApp
 {
@@ -20,16 +21,18 @@ namespace TestApp
 				OnPropertyChanged("Details");
 		}
 
-		public string Title { get { return _beacon.ProximityUUID.ToString(); } }
+		public string Title { get { return _beacon.ProximityUUID.ToString("N"); } }
 
 		public string Details 
 		{ 
 			get 
 			{ 
-				return string.Format("Major: {0}, Minor: {1}, Distance: {2:0.00}", 
+				return string.Format("{0}.{1}, Distance: {2:0.00}m", 
 					_beacon.Major, _beacon.Minor, _beacon.Distance);
 			} 
 		}
+
+		public Color Color { get { return _beacon.Color.MultiplyAlpha(0.5); } }
 	}
 }
 

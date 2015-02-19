@@ -40,7 +40,24 @@ namespace TestApp.iOS
 
 		public void SetColor(ESTBeaconColor color)
 		{
-			// TODO
+			switch (color)
+			{
+				case ESTBeaconColor.Mint:
+					Color = Color.FromHex("#9FCDAE");
+					break;
+				case ESTBeaconColor.Blueberry:
+					Color = Color.FromHex("#2E3192");
+					break;
+				case ESTBeaconColor.Ice:
+					Color = Color.FromHex("#6ECEF5");
+					break;
+				case ESTBeaconColor.White:
+					Color = Color.White;
+					break;
+				default:
+					Color = Color.Transparent;
+					break;
+			}
 		}
 
 		#endregion

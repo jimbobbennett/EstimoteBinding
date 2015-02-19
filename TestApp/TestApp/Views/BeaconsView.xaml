@@ -12,12 +12,32 @@
 
 			<Label Grid.Row="0" Text="Discovered iBeacons" HorizontalOptions="Center"/>
 
-			<ListView Grid.Row="1" ItemsSource="{Binding Path=Beacons}">
+			<ListView Grid.Row="1" ItemsSource="{Binding Path=Beacons}" HasUnevenRows="true">
 				<ListView.ItemTemplate>
 				    <DataTemplate>
-				      	<ImageCell ImageSource="Images/beacon_linear.png" 
-				      			   Text="{Binding Path=Title}"
-				      			   Detail="{Binding Path=Details}"/>
+				    	<ViewCell>
+				    		<ViewCell.View>
+					    		<Grid BackgroundColor="{Binding Path=Color}" ColumnSpacing="10">
+					    			<Grid.ColumnDefinitions>
+					    				<ColumnDefinition Width="5"/>
+					    				<ColumnDefinition Width="Auto"/>
+					    				<ColumnDefinition Width="5"/>
+					    				<ColumnDefinition Width="*"/>
+					    				<ColumnDefinition Width="5"/>
+					    			</Grid.ColumnDefinitions>
+					    			<Grid.RowDefinitions>
+					    				<RowDefinition Height="*"/>
+					    				<RowDefinition Height="*"/>
+					    			</Grid.RowDefinitions>
+									<Image Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Fill"
+										Source="Images/beacon_linear.png" Grid.Row="0" Grid.RowSpan="2"/>
+									<Label Grid.Row="0" Grid.Column="3" Text="{Binding Path=Title}"
+										VerticalOptions="Center"/>
+									<Label Grid.Row="1" Grid.Column="3" Text="{Binding Path=Details}"
+										TextColor="#545454" VerticalOptions="Center"/>
+					    		</Grid>
+				    		</ViewCell.View>
+				    	</ViewCell>
 				    </DataTemplate>
 				  </ListView.ItemTemplate>
 			</ListView>
