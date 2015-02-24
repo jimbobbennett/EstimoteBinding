@@ -1,10 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Foundation;
+using Estimote;
 using TestApp.Interfaces;
 using Xamarin.Forms;
-using EstimoteBinding;
 
 namespace TestApp.iOS
 {
@@ -38,20 +35,20 @@ namespace TestApp.iOS
 			set { SetProperty(ref _color, value); }
 		}
 
-		public void SetColor(ESTBeaconColor color)
+		public void SetColor(BeaconColor color)
 		{
 			switch (color)
 			{
-				case ESTBeaconColor.Mint:
+                case BeaconColor.Mint:
 					Color = Color.FromHex("#9FCDAE");
 					break;
-				case ESTBeaconColor.Blueberry:
+                case BeaconColor.Blueberry:
 					Color = Color.FromHex("#2E3192");
 					break;
-				case ESTBeaconColor.Ice:
+                case BeaconColor.Ice:
 					Color = Color.FromHex("#6ECEF5");
 					break;
-				case ESTBeaconColor.White:
+                case BeaconColor.White:
 					Color = Color.White;
 					break;
 				default:
