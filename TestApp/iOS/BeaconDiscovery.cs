@@ -3,10 +3,10 @@ using TestApp.iOS;
 using TestApp.Interfaces;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using EstimoteBinding;
 using Foundation;
 using System.Threading.Tasks;
 using System.Linq;
+using Estimote;
 
 [assembly: Xamarin.Forms.Dependency (typeof (BeaconDiscovery))]
 
@@ -14,15 +14,15 @@ namespace TestApp.iOS
 {
 	public class BeaconDiscovery : IBeaconDiscovery
 	{
-		private ObservableCollection<IBeacon> _beacons = new ObservableCollection<IBeacon>();
-		private ESTBeaconManager _beaconManager = new ESTBeaconManager();
+		private readonly ObservableCollection<IBeacon> _beacons = new ObservableCollection<IBeacon>();
+        private readonly BeaconManager _beaconManager = new BeaconManager();
 		private readonly object _syncObj = new object();
 		private readonly object _rangeSyncObj = new object();
 		private bool _isInitialized;
 		private int _regionId = 1;
 
-		private Dictionary<Guid, ESTBeaconRegion> _subscribedRegions = new Dictionary<Guid, ESTBeaconRegion>();
-		private Dictionary<Tuple<Guid, int, int>, IBeacon> _rangedBeacons = new Dictionary<Tuple<Guid, int, int>, IBeacon>();
+        private Dictionary<Guid, BeaconRegion> _subscribedRegions = new Dictionary<Guid, BeaconRegion>();
+		private readonly Dictionary<Tuple<Guid, int, int>, IBeacon> _rangedBeacons = new Dictionary<Tuple<Guid, int, int>, IBeacon>();
 
 		public BeaconDiscovery ()
 		{
@@ -54,8 +54,8 @@ namespace TestApp.iOS
 					_beaconManager.AvoidUnknownStateBeacons = true;
 					_beaconManager.RequestAlwaysAuthorization();
 
-					_beaconManager.DidDiscoverBeacons += DidDiscoverBeacons;
-					_beaconManager.DidRangeBeacons += DidRangeBeacons;
+					_beaconManager.DiscoveredBeacons += DidDiscoverBeacons;
+					_beaconManager.RangedBeacons += DidRangeBeacons;
 
 					_isInitialized = true;
 				}
@@ -63,25 +63,25 @@ namespace TestApp.iOS
 				foreach(var guid in uuids.Where(u => !_subscribedRegions.ContainsKey(u)))
 				{
 					var nsuuid = new NSUuid(guid.ToString());
-					var region = new ESTBeaconRegion (nsuuid, "MyRegion" + _regionId.ToString(), false);
+					var region = new BeaconRegion (nsuuid, "MyRegion" + _regionId, false);
 
-					_beaconManager.StartEstimoteBeaconsDiscoveryForRegion(region);
-					_beaconManager.StartRangingBeaconsInRegion(region);
+					_beaconManager.StartEstimoteBeaconsDiscovery(region);
+					_beaconManager.StartRangingBeacons(region);
 
 					_regionId++;
 				}
 			}
 		}
 
-		private void DidRangeBeacons (object sender, DidRangeBeaconsEventArgs args)
+		private void DidRangeBeacons (object sender, RangedBeaconsArgsEventArgs args)
 		{
 			lock (_rangeSyncObj)
 			{
-				foreach(var beacon in args.Beacons.OfType<ESTBeacon>())
+				foreach(var beacon in args.Beacons)
 				{
 					var guid = Guid.Parse(beacon.ProximityUUID.AsString());
-					var major = beacon.Major.Int32Value;
-					var minor = beacon.Minor.Int32Value;
+					var major = Convert.ToInt32(beacon.Major);
+					var minor = Convert.ToInt32(beacon.Minor);
 					var distance = beacon.Distance.DoubleValue;
 
 					var key = Tuple.Create(guid, major, minor);
@@ -104,7 +104,7 @@ namespace TestApp.iOS
 			}
 		}
 
-		private void DidDiscoverBeacons(object sender, DidDiscoverBeaconsEventArgs args)
+		private void DidDiscoverBeacons(object sender, DiscoveredBeaconsArgsEventArgs args)
 		{
 		}
 

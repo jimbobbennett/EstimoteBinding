@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Foundation;
+﻿using Foundation;
 using UIKit;
-
-using EstimoteBinding;
+using Xamarin.Forms;
+using Xamarin.Forms.Platform.iOS;
 
 namespace TestApp.iOS
 {
 	[Register ("AppDelegate")]
-	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+	public partial class AppDelegate : FormsApplicationDelegate
 	{
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
-			global::Xamarin.Forms.Forms.Init ();
+			Forms.Init ();
 
 			LoadApplication (new App ());
 
