@@ -1,11 +1,6 @@
 EstimoteBinding
 ===============
 
-Note - this is no longer going to be supported, Xamarin have released their own component for iOS, so this isn't really that useful any more except for reference.
+This contains some old example code to show a created binding for the Estimote iOS SDK.  This goes with the blog post at http://www.jimbobbennett.io/binding-ios-libraries-in-xamarin/.
 
-
-
-Xamarin bindings for the Estimote iOS SDK.  This is a first cut and only discovering and ranging beacons has been tested.
-More tests and a full test app to come later.
-
-This uses the Unified API.
+This code base is now an example cross platform app using the Xamarin iOS Estimote component.
