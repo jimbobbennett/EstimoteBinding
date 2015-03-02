@@ -30,7 +30,8 @@ namespace TestApp
 		private void LoadBeacons ()
 		{
 			_beacons.Clear ();
-			foreach (var beacon in _beaconDiscovery.Beacons) {
+			foreach (var beacon in _beaconDiscovery.Beacons) 
+			{
 				_beacons.Add (new BeaconViewModel (beacon));
 			}
 		}

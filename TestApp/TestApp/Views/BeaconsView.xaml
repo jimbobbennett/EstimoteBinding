@@ -29,7 +29,7 @@
 					    				<RowDefinition Height="*"/>
 					    			</Grid.RowDefinitions>
 									<Image Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Fill"
-										Source="Images/beacon_linear.png" Grid.Row="0" Grid.RowSpan="2"/>
+										Source="beacon_linear.png" Grid.Row="0" Grid.RowSpan="2"/>
 									<Label Grid.Row="0" Grid.Column="3" Text="{Binding Path=Title}"
 										VerticalOptions="Center"/>
 									<Label Grid.Row="1" Grid.Column="3" Text="{Binding Path=Details}"

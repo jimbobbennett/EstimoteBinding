@@ -123,8 +123,8 @@
     <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\Default-Portrait.png" />
     <BundleResource Include="Resources\Default-Portrait%402x.png" />
-    <BundleResource Include="Resources\Images\beacon_linear%402x.png" />
-    <BundleResource Include="Resources\Images\beacon_linearnie.png" />
+    <BundleResource Include="Resources\beacon_linear.png" />
+    <BundleResource Include="Resources\beacon_linear%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
